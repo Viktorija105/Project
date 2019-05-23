@@ -1,0 +1,291 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
+
+namespace Smart_calculator
+{
+    public partial class Form1 : Form
+    {
+        private char _trenutnaOperacija;
+        private bool postojiOperacija = false;
+        public Form1()
+        {
+            InitializeComponent();
+
+        }
+        
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            upisBrojeva.Width = 347;
+            this.Width = 387;
+            Form2 openform = new Form2();
+            openform.Show();
+        }
+
+        private void stanardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            upisBrojeva.Width = 186;
+            this.Width = 221;
+
+        }
+        private void scientificToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            upisBrojeva.Width = 347;
+            this.Width = 387;
+        }
+
+        private void funkcije(object sender, EventArgs e)
+        {
+            try { 
+            Button funkcija = (Button)sender;
+                if (upisBrojeva.Text != null)
+                {
+                    switch (funkcija.Text)
+                    {
+                        case "Cos":
+                            if(!postojiOperacija)
+                                upisBrojeva.Text = Math.Cos(Convert.ToDouble(upisBrojeva.Text)).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Sin":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Math.Sin(Convert.ToDouble(upisBrojeva.Text)).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Tan":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Math.Tan(Convert.ToDouble(upisBrojeva.Text)).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Log":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Math.Log(Convert.ToDouble(upisBrojeva.Text)).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Sqrt":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Math.Sqrt(Convert.ToDouble(upisBrojeva.Text)).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Exp":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Math.Exp(Convert.ToDouble(upisBrojeva.Text)).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Sinh":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Math.Sinh(Convert.ToDouble(upisBrojeva.Text)).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Cosh":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Math.Cosh(Convert.ToDouble(upisBrojeva.Text)).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "%":
+                            if (postojiOperacija && _trenutnaOperacija == '*') {
+                                string[] brojevi = upisBrojeva.Text.Split('*');
+                                upisBrojeva.Text = Convert.ToString(Convert.ToDouble(brojevi[0]) * (Convert.ToDouble(brojevi[1]) / 100));
+                                }
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Hex":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Convert.ToInt32(upisBrojeva.Text).ToString("X");
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Bin":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Convert.ToInt32(upisBrojeva.Text).ToString("2");
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "Oct":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Convert.ToInt32(upisBrojeva.Text,8).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "X^2":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Math.Pow(Convert.ToDouble(upisBrojeva.Text), 2).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "X^3":
+                            if (!postojiOperacija)
+                                upisBrojeva.Text = Math.Pow(Convert.ToDouble(upisBrojeva.Text), 3).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        case "+/-":
+                            if (!postojiOperacija && Convert.ToDouble(upisBrojeva.Text) > 0)
+                                upisBrojeva.Text = (Convert.ToDouble(upisBrojeva.Text) * -1).ToString();
+                            else if (!postojiOperacija && Convert.ToDouble(upisBrojeva.Text) < 0)
+                                upisBrojeva.Text = (Convert.ToDouble(upisBrojeva.Text) * -1).ToString();
+                            trenutnaOperacija.Text = funkcija.Text;
+                            break;
+                        default:
+                            throw new Exception("Netocna funkcija!");
+
+
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                upisBrojeva.Clear();
+                _trenutnaOperacija = ' ';
+                postojiOperacija = false;
+            }
+        }
+
+        private void upisivanjeBrojeva(object sender, EventArgs e)
+        {
+            if (upisBrojeva.Text == "0")
+            {
+                upisBrojeva.Clear();
+            }
+            Button gumb = (Button)sender;
+            upisBrojeva.Text = upisBrojeva.Text + gumb.Text;
+        }
+        private void tocka_Click(object sender, EventArgs e)
+        {
+            Button tocka = (Button)sender;
+            
+            if (!upisBrojeva.Text.Contains('.') && !postojiOperacija)
+            {
+                upisBrojeva.Text = upisBrojeva.Text + tocka.Text;
+            }
+            else if(!upisBrojeva.Text.Contains('.') && postojiOperacija && upisBrojeva.Text.Substring(tocka.Text.LastIndexOf(_trenutnaOperacija) + 1).Length > 0)
+            {
+                upisBrojeva.Text = upisBrojeva.Text + tocka.Text;
+            }
+            else if(upisBrojeva.Text.Contains('.') && postojiOperacija && upisBrojeva.Text.Substring(tocka.Text.LastIndexOf(_trenutnaOperacija) + 1).Length > 0)
+            {
+                upisBrojeva.Text = upisBrojeva.Text + tocka.Text;
+            }
+ 
+        }
+        private void operacija(object sender, EventArgs e)
+        {
+            try
+            {
+                Button operacija = (Button)sender;
+                if (!upisBrojeva.Text.Contains(operacija.Text) && operacija.Text != "=" && !postojiOperacija)
+                {
+                    upisBrojeva.Text = upisBrojeva.Text + operacija.Text;
+                    postojiOperacija = true;
+                    _trenutnaOperacija = Convert.ToChar(operacija.Text);                   
+                }
+                else if(postojiOperacija && upisBrojeva.Text.Substring(operacija.Text.LastIndexOf(_trenutnaOperacija)+1).Length > 0)
+                {
+                    string[] brojevi = upisBrojeva.Text.Split(_trenutnaOperacija);
+                    IspisRezultata(brojevi.ToList(), _trenutnaOperacija);
+                    brojevi.ToList().Clear();
+                    _trenutnaOperacija = ' ';
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("operacija:"+ex.Message);
+            }
+        }
+        private void Jednako(object sender, EventArgs e)
+        {
+            string[] brojevi = upisBrojeva.Text.Split(_trenutnaOperacija);
+            IspisRezultata(brojevi.ToList(), _trenutnaOperacija);
+            postojiOperacija = false;
+        }
+        private void IspisRezultata(List<string> brojevi,char operacija)
+        {
+            try
+            {
+                double result;
+                switch(operacija)
+                {
+                    case '+':
+                        result = Convert.ToDouble(brojevi[0]) + Convert.ToDouble(brojevi[1]);
+                        upisBrojeva.Text = result.ToString();
+                        break;
+                    case '-':
+                        result = Convert.ToDouble(brojevi[0]) - Convert.ToDouble(brojevi[1]);
+                        upisBrojeva.Text = result.ToString();
+                        break;
+                    case '*':
+                        result = Convert.ToDouble(brojevi[0]) * Convert.ToDouble(brojevi[1]);
+                        upisBrojeva.Text = result.ToString();
+                        break;
+                    case '/':
+                        result = Convert.ToDouble(brojevi[0]) / Convert.ToDouble(brojevi[1]);
+                        upisBrojeva.Text = result.ToString();
+                        break;
+                }
+
+            }
+            catch(Exception )
+            {
+                upisBrojeva.Clear();
+            
+                MessageBox.Show("Nedopustena operacija!");
+            }
+            finally
+            {
+                brojevi.Clear();
+                _trenutnaOperacija = ' ';
+                postojiOperacija = false;
+            }
+            
+        }
+
+        private void ceGumb_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                upisBrojeva.Text = upisBrojeva.Text.Substring(0, upisBrojeva.Text.Length - 1);
+                trenutnaOperacija.Text = "";
+                postojiOperacija = false;
+            }
+            catch(Exception )
+            {
+                MessageBox.Show("Nema brojeva!");
+            }
+        }
+        private void cGumb_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                upisBrojeva.Clear();
+                trenutnaOperacija.Text = "";
+                postojiOperacija = false;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Nema brojeva!");
+            }
+        }
+
+        private void AboutCalculatorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show( "Welcome to Smart Calculator. \n" +
+                "This application will help you in solving math problems in easy way. \n" +
+                "Version: v.1.0. \n" +
+                "Made by: Viktorija Brozinčević \n" +
+                "Date: 21.05.2019\n",
+                 "O kalkulatoru");
+        }
+
+        private void FileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
+    
+

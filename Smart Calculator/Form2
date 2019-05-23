@@ -1,0 +1,95 @@
+using System;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OxyPlot;
+using OxyPlot.Series;
+using OxyPlot.Axes;
+using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
+
+
+namespace Smart_calculator
+{
+    public partial class Form2 : Form
+    {
+        public Form2()
+        {
+            InitializeComponent();
+        }
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            string[] tipFunkcije = { "Korijen","Apsolutna","Reciprocna","Logaritamska","Eksponencijalna","Sinus","Kosinus","Tangens","Kotangens"};
+            foreach(string funkcija in tipFunkcije)
+            {
+                odabirFunkcije.Items.Add(funkcija);
+            }
+            odabirFunkcije.SelectedIndex = 0;
+
+        }
+
+        private void Chart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                if (xVal.Text != null && double.TryParse(xVal.Text, out double x) && odabirFunkcije.SelectedItem != null)
+                {
+                    string odabranaFunkcija = odabirFunkcije.SelectedItem.ToString();
+                    plotAreaView.Model = new PlotModel();
+                    switch(odabranaFunkcija)
+                    {
+                        case "Korijen":
+                            plotAreaView.Model.Series.Add(new FunctionSeries(Math.Sqrt, 0, x, 0.1, "Sqrt(x)"));
+                            break;
+                        case "Apsolutna":
+                            plotAreaView.Model.Series.Add(new FunctionSeries(Math.Abs, 0, x, 0.1, "x^3"));
+                            break;
+                        case "Reciprocna":
+                            plotAreaView.Model.Series.Add(new FunctionSeries((tempX) => 1/tempX, 0, x, 0.1, "x^3"));
+                            break;
+                        case "Logaritamska":
+                            plotAreaView.Model.Series.Add(new FunctionSeries(Math.Log, 0, x, 0.1, "x^3"));
+                            break;
+                        case "Eksponencijalna":
+                            plotAreaView.Model.Series.Add(new FunctionSeries(Math.Exp, 0, x, 0.1, "x^3"));
+                            break;
+                        case "Sinus":
+                            plotAreaView.Model.Series.Add(new FunctionSeries(Math.Sin, 0, x, 0.1, "x^3"));
+                            break;
+                        case "Kosinus":
+                            plotAreaView.Model.Series.Add(new FunctionSeries(Math.Cos, 0, x, 0.1, "x^3"));
+                            break;
+                        case "Tangens":
+                            plotAreaView.Model.Series.Add(new FunctionSeries(Math.Tan, 0, x, 0.1, "x^3"));
+                            break;
+                        case "Kotangens":
+                            plotAreaView.Model.Series.Add(new FunctionSeries((tempX) => 1/Math.Tan(tempX), 0, x, 0.1, "x^3"));
+                            break;
+                        default:
+                            break;
+                    }
+                    plotAreaView.Model.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, MaximumPadding = 0.1, MinimumPadding = 0.1 });
+                    plotAreaView.Model.Axes.Add(new LinearAxis { Position = AxisPosition.Left, MaximumPadding = 0.1, MinimumPadding = 0.1 });
+
+                }
+                else
+                {
+                    throw new Exception("Unos nije dobar.");
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Graf greska: " + ex.Message);
+            }
+        }
+    }
+}
+
